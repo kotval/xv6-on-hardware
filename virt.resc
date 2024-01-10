@@ -1,0 +1,21 @@
+:name: virt
+
+using sysbus
+$name?="virt"
+mach create $name
+machine LoadPlatformDescription @platforms/cpus/sifive-fu540.repl
+machine StartGdbServer 3333 true
+
+$bin?=@kernel/kernel
+$rootfs?=@fs.img
+
+showAnalyzer sysbus.uart0
+
+macro reset 
+"""
+    sysbus LoadELF $bin false
+    sysbus LoadAtags "root=sd rootfstype=img" 
+    cpu PC 0x80000000
+"""
+logLevel 3
+runMacro $reset
