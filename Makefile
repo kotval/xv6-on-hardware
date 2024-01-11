@@ -56,7 +56,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb -gdwarf-2
+CFLAGS = -Wall -Werror -Og -fno-omit-frame-pointer -ggdb3 -gdwarf-2
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
@@ -161,6 +161,9 @@ QEMUOPTS += -drive file=fs.img,if=sd
 
 qemu: $K/kernel fs.img
 	$(QEMU) $(QEMUOPTS)
+
+renode: $K/kernel fs.img .gdbinit
+	renode virt.resc
 
 .gdbinit: .gdbinit.tmpl-riscv
 	sed "s/:1234/:$(GDBPORT)/" < $^ > $@
