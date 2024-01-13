@@ -1,0 +1,19 @@
+:name: virt
+
+using sysbus
+$name?="virt"
+mach create $name
+machine LoadPlatformDescription @riscv64_virt.repl
+machine StartGdbServer 26000 true
+
+$bin?=@kernel/kernel
+
+showAnalyzer sysbus.uart0
+
+macro reset 
+"""
+    sysbus LoadELF $bin false
+    cpu PC 0x80000000
+"""
+logLevel 3
+runMacro $reset

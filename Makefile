@@ -163,7 +163,7 @@ qemu: $K/kernel fs.img
 	$(QEMU) $(QEMUOPTS)
 
 renode: $K/kernel fs.img .gdbinit
-	renode virt.resc
+	renode --console virt64.resc
 
 .gdbinit: .gdbinit.tmpl-riscv
 	sed "s/:1234/:$(GDBPORT)/" < $^ > $@
