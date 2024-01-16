@@ -21,3 +21,4 @@ clint: IRQControllers.CoreLevelInterruptor  @ sysbus 0x02000000
 
 virtio: Storage.VirtIOBlockDevice @ sysbus 0x10001000
     IRQ -> plic@1
+

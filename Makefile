@@ -56,7 +56,7 @@ LD = $(TOOLPREFIX)ld
 OBJCOPY = $(TOOLPREFIX)objcopy
 OBJDUMP = $(TOOLPREFIX)objdump
 
-CFLAGS = -Wall -Werror -Og -fno-omit-frame-pointer -ggdb3 -gdwarf-2
+CFLAGS = -Wall -Werror -O -fno-omit-frame-pointer -ggdb3 -gdwarf-2
 CFLAGS += -MD
 CFLAGS += -mcmodel=medany
 CFLAGS += -ffreestanding -fno-common -nostdlib -mno-relax
@@ -147,23 +147,24 @@ clean:
 	$(UPROGS)
 
 # try to generate a unique GDB port
-GDBPORT = $(shell expr `id -u` % 5000 + 25000)
+#GDBPORT = $(shell expr `id -u` % 5000 + 25000)
+GDBPORT = 26000
 # QEMU's gdb stub command line changed in 0.11
 QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
 	then echo "-gdb tcp::$(GDBPORT)"; \
 	else echo "-s -p $(GDBPORT)"; fi)
 ifndef CPUS
-CPUS := 5
+CPUS := 1
 endif
 
-QEMUOPTS = -machine sifive_u,msel=11 -bios none -kernel $K/kernel -m 8G -smp 5
+QEMUOPTS = -machine sifive_u,msel=11 -bios none -kernel $K/kernel -smp 1
 QEMUOPTS += -drive file=fs.img,if=sd
 
 qemu: $K/kernel fs.img
 	$(QEMU) $(QEMUOPTS)
 
 renode: $K/kernel fs.img .gdbinit
-	renode --console virt64.resc
+	mono /Applications/Renode.app/Contents/MacOS/bin/Renode.exe virt64.resc
 
 .gdbinit: .gdbinit.tmpl-riscv
 	sed "s/:1234/:$(GDBPORT)/" < $^ > $@
